@@ -66,16 +66,70 @@ Albus	(null)
 > * The cat's name, adopter's name, and adopted date for each cat adopted within the past month to be displayed as part of the "Happy Tail" social media promotion which posts recent successful adoptions.
 
 ```
+SELECT cats.name, adopters.first_name, cat_adoptions.date
+FROM cats
+JOIN cat_adoptions ON cats.id = cat_adoptions.cat_id
+JOIN adopters ON cat_adoptions.adopter_id = adopters.id
+WHERE cat_adoptions.date >= (CURRENT_DATE - INTERVAL '30 days');
+
+
+name	first_name	date
+Mushi	Arabella	2018-04-18
+Victoire	Argus	2018-04-23
 
 ```
-* Create a list of adopters who have not yet chosen a dog to adopt.
-* Lists of all cats and all dogs who have not been adopted.
-* The name of the person who adopted Rosco.
+>* Create a list of adopters who have not yet chosen a dog to adopt.
 
 ```
+SELECT adopters.first_name, adopters.last_name
+FROM adopters
+LEFT OUTER JOIN dog_adoptions
+ON adopters.id = dog_adoptions.adopter_id
+WHERE dog_adoptions.adopter_id IS NULL;
 
+
+first_name	last_name
+Hermione	Granger
+Arabella	Figg
+```
+>* Lists of all cats and all dogs who have not been adopted.
+
+```
+SELECT dogs.name
+FROM dogs
+LEFT OUTER JOIN dog_adoptions
+ON dogs.id = dog_adoptions.dog_id
+WHERE dog_adoptions.dog_id IS NULL
+UNION ALL
+SELECT cats.name
+FROM cats
+LEFT OUTER JOIN cat_adoptions
+ON cats.id = cat_adoptions.cat_id
+WHERE cat_adoptions.cat_id IS NULL;
+
+name
+Boujee
+Munchkin
+Marley
+Lassie
+Marmaduke
+Seashell
+Nala
+```
+
+>* The name of the person who adopted Rosco.
+
+```
+SELECT adopters.first_name, adopters.last_name
+FROM adopters
+JOIN dog_adoptions
+ON adopters.id = dog_adoptions.adopter_id
+WHERE dog_adoptions.dog_id = 10007;
+
+first_name	last_name
+Argus	Filch
 ```
 
 >Using this Library schema and data, write queries applying the following scenarios and include the results:
-* To determine if the library should buy more copies of a given book, please provide the names and position, in order, of all of the patrons with a hold (request for a book with all copies checked out) on "Advanced Potion-Making".
-* List all of the library patrons. If they have one or more books checked out, list the books with the patrons.
+>* To determine if the library should buy more copies of a given book, please provide the names and position, in order, of all of the patrons with a hold (request for a book with all copies checked out) on "Advanced Potion-Making".
+>* List all of the library patrons. If they have one or more books checked out, list the books with the patrons.
