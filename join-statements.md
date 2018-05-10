@@ -132,4 +132,29 @@ Argus	Filch
 
 >Using this Library schema and data, write queries applying the following scenarios and include the results:
 >* To determine if the library should buy more copies of a given book, please provide the names and position, in order, of all of the patrons with a hold (request for a book with all copies checked out) on "Advanced Potion-Making".
+
+```
+SELECT patrons.name, holds.rank
+FROM patrons
+JOIN holds
+ON patrons.id = holds.patron_id
+WHERE isbn = '9136884926';
+
+
+name	rank
+Terry Boot	1
+Cedric Diggory	2
+```
 >* List all of the library patrons. If they have one or more books checked out, list the books with the patrons.
+
+```
+SELECT patrons.name, transactions.checked_in_date, books.title
+FROM transactions
+LEFT OUTER JOIN books ON books.isbn = transactions.isbn
+LEFT OUTER JOIN patrons ON transactions.patron_id = patrons.id
+WHERE transactions.checked_in_date IS NULL
+
+name	checked_in_date	title
+Terry Boot	(null)	Advanced Potion-Making
+Cedric Diggory	(null)	Fantastic Beasts and Where to Find Them
+```
